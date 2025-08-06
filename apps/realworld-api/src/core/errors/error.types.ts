@@ -1,1 +1,1 @@
-export type ErrorType = 'DOMAIN' | 'APPLICATION' | 'INFRASTRUCTURE';
+export type ErrorType = 'APPLICATION' | 'DOMAIN' | 'INFRASTRUCTURE';

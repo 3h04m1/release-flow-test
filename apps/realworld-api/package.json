@@ -6,7 +6,12 @@
   "homepage": "",
   "license": "ISC",
   "main": "dist/main.js",
-  "scripts": {},
+  "scripts": {
+    "lint": "eslint . --ext .ts,.tsx --cache",
+    "lint:fix": "eslint . --ext .ts,.tsx --cache --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
   "dependencies": {
     "@nestjs/common": "^11.1.5",
     "@nestjs/core": "^11.1.5",
@@ -17,6 +22,11 @@
   },
   "devDependencies": {
     "@types/node": "^24.1.0",
+    "eslint-plugin-decorator-position": "^6.0.0",
+    "eslint-plugin-jsdoc": "^52.0.4",
+    "eslint-plugin-perfectionist": "^4.15.0",
+    "eslint-plugin-security": "^3.0.1",
+    "eslint-plugin-sonarjs": "^3.0.4",
     "typescript": "^5.7.2"
   }
 }

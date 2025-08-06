@@ -1,0 +1,1 @@
+export { IBaseModel } from './base-model.interface';

@@ -15,7 +15,10 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "pre-push": "pnpm run lint:fix && pnpm run test:coverage",
-    "pre-commit": "pnpm run lint:fix && pnpm run format:check"
+    "pre-commit": "pnpm run lint:fix && pnpm run format:check",
+    "typecheck": "tsc --noEmit",
+    "test:ci": "jest --ci --runInBand",
+    "build": "tsc -p tsconfig.build.json"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.5",

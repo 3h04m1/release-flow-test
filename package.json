@@ -1,9 +1,6 @@
 {
   "name": "root",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
@@ -29,5 +26,6 @@
   },
   "scripts": {
     "prepare": "husky"
-  }
+  },
+  "packageManager": "pnpm@10.2.0"
 }

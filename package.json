@@ -28,7 +28,7 @@
     "typescript-eslint": "^8.39.0"
   },
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "lint-staged": {
     "apps/realworld-api/**/*.{ts,tsx}": [
@@ -36,8 +36,8 @@
       "prettier --write"
     ],
     "apps/realworld-app/**/*.{ts,tsx}": [
-        "eslint --fix",
-        "prettier --write"
+      "eslint --fix",
+      "prettier --write"
     ]
   }
 }

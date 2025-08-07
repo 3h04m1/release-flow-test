@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - 'feat/**'
+      - 'release/**'
+  pull_request:
+    branches:
+      - main
+      - 'feat/**'
+      - 'release/**'
+
+jobs:
+  setup:
+    name: Detect Changed Packages
+    runs-on: ubuntu-latest
+    outputs:
+      changed_apps: ${{ steps.set-matrix.outputs.changed_apps }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: ${{ env.ACT != 'true' && 'pnpm' || '' }}
+
+      - name: Install pnpm
+        run: |
+          npm i -g pnpm@latest
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+
+      - name: Determine base ref
+        id: base
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "base_ref=${{ github.base_ref }}" >> $GITHUB_OUTPUT
+          else
+          # Fallback if origin/main doesn't exist
+          echo "base_ref=$(git rev-list --max-parents=0 HEAD)" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Get changed apps
+        id: set-matrix
+        run: |
+          BASE=$(git merge-base ${{ steps.base.outputs.base_ref }} HEAD || git rev-list --max-parents=0 HEAD)
+          echo "Using base commit: $BASE"
+
+          pnpm exec lerna list --since $BASE --json | jq -r '.[] | select(.location | test("apps/")) | .name' > changed.txt
+          cat changed.txt
+
+          APPS=$(jq -R -s -c 'split("\n") | map(select(length > 0)) | map({app: .})' changed.txt)
+          echo "changed_apps=${APPS}" >> $GITHUB_OUTPUT
+  build:
+    needs: setup
+    if: needs.setup.outputs.changed_apps != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.setup.outputs.changed_apps) }}
+
+    name: Build and Test - ${{ matrix.app }}
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: ${{ env.ACT != 'true' && 'pnpm' || '' }}
+
+      - name: Install pnpm
+        run: |
+          npm i -g pnpm@latest
+      - name: debug
+        run: |
+          echo "Changed app: ${{ matrix.app }}"
+          echo "Current working directory: $(pwd)"
+          echo "Node version: $(node -v)"
+          echo "NPM version: $(npm -v)"
+          echo "PNPM version: $(pnpm -v)"
+
+      - name: Lint ${{ matrix.app }}
+        run: |
+          echo "Linting ${{ matrix.app }}"
+          echo $(pwd)
+          echo $(ls -la)
+          pnpm exec lerna run lint --scope ${{ matrix.app }}
+
+#      - name: Type Check ${{ matrix.app }}
+#        run: npx lerna run typecheck --scope ${{ matrix.app }}
+#
+#      - name: Test ${{ matrix.app }}
+#        run: npx lerna run test:ci --scope ${{ matrix.app }}
+#
+#      - name: Build ${{ matrix.app }}
+#        run: npx lerna run build --scope ${{ matrix.app }}

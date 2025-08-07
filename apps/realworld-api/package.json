@@ -9,8 +9,13 @@
   "scripts": {
     "lint": "eslint . --ext .ts,.tsx --cache",
     "lint:fix": "eslint . --ext .ts,.tsx --cache --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format": "prettier --write ./src",
+    "format:check": "prettier --check ./src",
+    "test": "jest --runInBand --detectOpenHandles --forceExit",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "pre-push": "pnpm run lint:fix && pnpm run test:coverage",
+    "pre-commit": "pnpm run lint:fix && pnpm run format:check"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.5",
@@ -21,12 +26,18 @@
     "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
+    "@nestjs/testing": "^11.1.6",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.1.0",
     "eslint-plugin-decorator-position": "^6.0.0",
     "eslint-plugin-jsdoc": "^52.0.4",
     "eslint-plugin-perfectionist": "^4.15.0",
     "eslint-plugin-security": "^3.0.1",
     "eslint-plugin-sonarjs": "^3.0.4",
+    "jest": "^30.0.5",
+    "ts-jest": "^29.4.1",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths-jest": "^0.0.1",
     "typescript": "^5.7.2"
   }
 }

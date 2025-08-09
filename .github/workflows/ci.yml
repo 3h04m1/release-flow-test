@@ -6,11 +6,15 @@ on:
       - main
       - 'feat/**'
       - 'release/**'
+#      TODO: Remove this once we have a stable release branch
+      - 'task/**'
   pull_request:
     branches:
       - main
       - 'feat/**'
       - 'release/**'
+#      TODO: Remove this once we have a stable release branch
+      - 'task/**'
 
 jobs:
   setup:
@@ -21,18 +25,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v2
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: ${{ env.ACT != 'true' && 'pnpm' || '' }}
-
-      - name: Install pnpm
-        run: |
-          npm i -g pnpm@latest
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: |
-          pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Determine base ref
         id: base
@@ -60,19 +61,24 @@ jobs:
     if: needs.setup.outputs.changed_apps != '[]'
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         include: ${{ fromJson(needs.setup.outputs.changed_apps) }}
 
     name: Build and Test - ${{ matrix.app }}
     steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: ${{ env.ACT != 'true' && 'pnpm' || '' }}
+          cache: 'pnpm'
 
-      - name: Install pnpm
-        run: |
-          npm i -g pnpm@latest
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
       - name: debug
         run: |
           echo "Changed app: ${{ matrix.app }}"
@@ -80,19 +86,16 @@ jobs:
           echo "Node version: $(node -v)"
           echo "NPM version: $(npm -v)"
           echo "PNPM version: $(pnpm -v)"
+          echo "Branch: ${{ github.head_ref || github.ref }}"
 
       - name: Lint ${{ matrix.app }}
-        run: |
-          echo "Linting ${{ matrix.app }}"
-          echo $(pwd)
-          echo $(ls -la)
-          pnpm exec lerna run lint --scope ${{ matrix.app }}
+        run: pnpm exec lerna run lint --scope ${{ matrix.app }}
 
-#      - name: Type Check ${{ matrix.app }}
-#        run: npx lerna run typecheck --scope ${{ matrix.app }}
-#
-#      - name: Test ${{ matrix.app }}
-#        run: npx lerna run test:ci --scope ${{ matrix.app }}
-#
-#      - name: Build ${{ matrix.app }}
-#        run: npx lerna run build --scope ${{ matrix.app }}
+      - name: Type Check ${{ matrix.app }}
+        run: pnpm exec lerna run typecheck --scope ${{ matrix.app }}
+
+      - name: Test ${{ matrix.app }}
+        run: pnpm exec lerna run test:ci --scope ${{ matrix.app }}
+
+      - name: Build ${{ matrix.app }}
+        run: pnpm exec lerna run build --scope ${{ matrix.app }}

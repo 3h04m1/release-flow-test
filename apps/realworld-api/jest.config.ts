@@ -19,7 +19,7 @@ const config: Config = {
   collectCoverageFrom: [
     'src/**/*.{ts,js}',
   ],
-  coverageDirectory: '<rootDir>/coverage',
+  coverageDirectory: '<rootDir>/.coverage',
   coverageReporters: ['text', 'lcov'],
   testEnvironment: 'node',
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {prefix: '<rootDir>/' }),

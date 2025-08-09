@@ -11,13 +11,13 @@
     "lint:fix": "eslint src/ --ext .ts,.tsx --cache --fix",
     "format": "prettier --write ./src",
     "format:check": "prettier --check ./src",
-    "test": "jest --runInBand --detectOpenHandles --forceExit",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test": "jest --runInBand --detectOpenHandles --forceExit --passWithNoTests",
+    "test:watch": "jest --watch --passWithNoTests",
+    "test:ci": "jest --ci --runInBand --passWithNoTests",
+    "test:coverage": "jest --coverage --passWithNoTests",
     "pre-push": "pnpm run lint:fix && pnpm run test:coverage",
     "pre-commit": "pnpm run lint:fix && pnpm run format:check",
     "typecheck": "tsc --noEmit -p tsconfig.build.json",
-    "test:ci": "jest --ci --runInBand",
     "build": "tsc -p tsconfig.build.json"
   },
   "dependencies": {

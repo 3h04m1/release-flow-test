@@ -2,6 +2,7 @@
   "name": "root",
   "private": true,
   "devDependencies": {
+    "@braintree/sanitize-url": "^7.1.1",
     "@catppuccin/vitepress": "^0.1.2",
     "@changesets/cli": "^2.29.5",
     "@commitlint/cli": "^19.8.1",
@@ -11,6 +12,9 @@
     "@eslint/js": "^9.32.0",
     "@typescript-eslint/eslint-plugin": "^8.39.0",
     "@typescript-eslint/parser": "^8.39.0",
+    "cytoscape": "^3.33.0",
+    "cytoscape-cose-bilkent": "^4.1.0",
+    "debug": "^4.4.1",
     "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
@@ -19,13 +23,18 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "husky": "^9.1.7",
     "install": "^0.13.0",
+    "langium": "^4.0.0",
     "lerna": "^8.2.3",
     "lint-staged": "^16.1.4",
+    "mermaid": "^11.9.0",
     "prettier": "^3.5.3",
     "typescript": "^5.7.2",
-    "vitepress": "^1.6.4"
+    "vitepress": "^1.6.4",
+    "vitepress-plugin-mermaid": "^2.0.17",
+    "vitepress-sidebar": "^1.33.0"
   },
   "dependencies": {
+    "dayjs": "^1.11.13",
     "typescript-eslint": "^8.39.0"
   },
   "scripts": {

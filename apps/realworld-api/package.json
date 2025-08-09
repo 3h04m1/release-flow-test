@@ -16,7 +16,7 @@
     "test:coverage": "jest --coverage",
     "pre-push": "pnpm run lint:fix && pnpm run test:coverage",
     "pre-commit": "pnpm run lint:fix && pnpm run format:check",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit -p tsconfig.build.json",
     "test:ci": "jest --ci --runInBand",
     "build": "tsc -p tsconfig.build.json"
   },

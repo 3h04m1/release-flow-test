@@ -1,5 +1,5 @@
 export interface IBaseModel<IdType = string> {
-    id: IdType;
     createdAt: Date;
+    id: IdType;
     updatedAt: Date;
 }

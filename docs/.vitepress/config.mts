@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  base: '/realworld-ddd/',
   title: "Realworld FullStack",
   description: "Implementation with Nest.js DDD and FSD React + TanStack",
   markdown: {

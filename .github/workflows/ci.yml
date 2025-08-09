@@ -6,15 +6,11 @@ on:
       - main
       - 'feat/**'
       - 'release/**'
-#      TODO: Remove this once we have a stable release branch
-      - 'task/**'
   pull_request:
     branches:
       - main
       - 'feat/**'
       - 'release/**'
-#      TODO: Remove this once we have a stable release branch
-      - 'task/**'
 
 jobs:
   setup:

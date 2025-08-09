@@ -1,5 +1,4 @@
 ---
-# https://vitepress.dev/reference/default-theme-home-page
 layout: home
 
 hero:
@@ -8,11 +7,11 @@ hero:
   tagline: "Implementation with Nest.js DDD and FSD React + TanStack. Includes best practices, design patterns, and more."
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: Backend Documentation
+      link: /backend/overview
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: Frontend Documentation
+      link: /frontend/overview
 
 features:
   - title: DDD

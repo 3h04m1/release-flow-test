@@ -39,5 +39,9 @@
 
     "strict": true,
     "skipLibCheck": true
-  }
+  },
+  "include": [
+    "jest.config.ts",
+    "src/**/*.ts"
+  ]
 }

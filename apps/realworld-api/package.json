@@ -7,8 +7,8 @@
   "license": "ISC",
   "main": "dist/main.js",
   "scripts": {
-    "lint": "eslint . --ext .ts,.tsx --cache",
-    "lint:fix": "eslint . --ext .ts,.tsx --cache --fix",
+    "lint": "eslint src/ --ext .ts,.tsx --cache",
+    "lint:fix": "eslint src/ --ext .ts,.tsx --cache --fix",
     "format": "prettier --write ./src",
     "format:check": "prettier --check ./src",
     "test": "jest --runInBand --detectOpenHandles --forceExit",

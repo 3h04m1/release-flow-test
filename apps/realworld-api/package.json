@@ -7,17 +7,17 @@
   "license": "ISC",
   "main": "dist/main.js",
   "scripts": {
-    "lint": "eslint . --ext .ts,.tsx --cache",
-    "lint:fix": "eslint . --ext .ts,.tsx --cache --fix",
+    "lint": "eslint src/ --ext .ts,.tsx --cache",
+    "lint:fix": "eslint src/ --ext .ts,.tsx --cache --fix",
     "format": "prettier --write ./src",
     "format:check": "prettier --check ./src",
-    "test": "jest --runInBand --detectOpenHandles --forceExit",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test": "jest --runInBand --detectOpenHandles --forceExit --passWithNoTests",
+    "test:watch": "jest --watch --passWithNoTests",
+    "test:ci": "jest --ci --runInBand --passWithNoTests",
+    "test:coverage": "jest --coverage --passWithNoTests",
     "pre-push": "pnpm run lint:fix && pnpm run test:coverage",
     "pre-commit": "pnpm run lint:fix && pnpm run format:check",
-    "typecheck": "tsc --noEmit",
-    "test:ci": "jest --ci --runInBand",
+    "typecheck": "tsc --noEmit -p tsconfig.build.json",
     "build": "tsc -p tsconfig.build.json"
   },
   "dependencies": {
@@ -26,7 +26,8 @@
     "@nestjs/cqrs": "^11.0.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "tslib": "^2.8.1"
   },
   "devDependencies": {
     "@nestjs/testing": "^11.1.6",

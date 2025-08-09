@@ -2,6 +2,7 @@
   "name": "root",
   "private": true,
   "devDependencies": {
+    "@changesets/cli": "^2.29.5",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@commitlint/config-lerna-scopes": "^19.8.1",
@@ -27,5 +28,9 @@
   "scripts": {
     "prepare": "husky"
   },
-  "packageManager": "pnpm@10.2.0"
+  "packageManager": "pnpm@10.2.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
 }

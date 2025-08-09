@@ -9,7 +9,6 @@ import {
   TextField,
 } from '@/components/demo.FormComponents.tsx'
 
-
 export const { useAppForm } = createFormHook({
   fieldComponents: {
     TextField,

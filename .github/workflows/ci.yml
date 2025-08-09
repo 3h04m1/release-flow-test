@@ -6,12 +6,14 @@ on:
       - main
       - 'feat/**'
       - 'release/**'
-      - 'task/**' # TODO: remove once stable
+#      TODO: Remove this once we have a stable release branch
+      - 'task/**'
   pull_request:
     branches:
       - main
       - 'feat/**'
       - 'release/**'
+#      TODO: Remove this once we have a stable release branch
       - 'task/**'
 
 jobs:
@@ -23,40 +25,66 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # needed for git diff
+          fetch-depth: 0  # Ensure full history for diffing
 
       - uses: pnpm/action-setup@v2
-        with:
-          version: 8
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: pnpm
-
-      - name: Cache pnpm store
-        uses: actions/cache@v3
-        with:
-          path: ~/.pnpm-store
-          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            pnpm-${{ runner.os }}-
+          node-version: '20'
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Determine the base commit for diffing
       - name: Determine base ref
         id: base
-        run: .github/scripts/determine_base_ref.sh
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "base_ref=${{ github.event.pull_request.base.sha }}" >> $GITHUB_OUTPUT
+          elif [ -n "${{ github.event.before }}" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            echo "base_ref=${{ github.event.before }}" >> $GITHUB_OUTPUT
+          else
+            git fetch origin main || true
+            if git rev-parse origin/main >/dev/null 2>&1; then
+              echo "base_ref=$(git rev-parse origin/main)" >> $GITHUB_OUTPUT
+            else
+              echo "base_ref=$(git rev-list --max-parents=0 HEAD)" >> $GITHUB_OUTPUT
+            fi
+          fi
 
+      # Find changed apps using lerna and jq
       - name: Get changed apps
         id: set-matrix
-        run: .github/scripts/get_changed_apps.sh ${{ steps.base.outputs.base_ref }}
-
-      - name: Summary
         run: |
-          echo "Changed apps: ${{ steps.set-matrix.outputs.changed_apps }}"
+          set -euo pipefail
+          BASE=${{ steps.base.outputs.base_ref }}
+          echo "Using base commit: $BASE"
+          pnpm exec lerna list --since $BASE --json | jq -r '.[] | select(.location | test("apps/")) | .name' > changed.txt
+          cat changed.txt
+          if [ -s changed.txt ]; then
+            APPS=$(jq -R -s -c 'split("\n") | map(select(length > 0)) | map({app: .})' changed.txt)
+          else
+            APPS="[]"
+          fi
+          echo "changed_apps=${APPS}" >> $GITHUB_OUTPUT
 
+      # Output a summary for debugging
+      - name: Summary of changed apps
+        run: |
+          echo "Changed apps matrix: ${{ steps.set-matrix.outputs.changed_apps }}"
+
+      # Fail early if no changed apps detected (optional, comment out if you want to allow empty builds)
+      - name: Validate changed apps
+        run: |
+          if [ "${{ steps.set-matrix.outputs.changed_apps }}" = "[]" ]; then
+            echo "No changed apps detected. Skipping build."
+            exit 0
+          else
+            echo "Changed apps detected, proceeding with build."
+          fi
   build:
     needs: setup
     if: needs.setup.outputs.changed_apps != '[]'
@@ -66,38 +94,39 @@ jobs:
       matrix:
         include: ${{ fromJson(needs.setup.outputs.changed_apps) }}
 
-    name: Build & Test - ${{ matrix.app }}
+    name: Build and Test - ${{ matrix.app }}
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 1 # faster
+          fetch-depth: 0  # Ensure full history for diffing
 
       - uses: pnpm/action-setup@v2
-        with:
-          version: 8
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: pnpm
+          node-version: '20'
+          cache: 'pnpm'
 
-      - name: Restore pnpm store
-        uses: actions/cache@v3
-        with:
-          path: ~/.pnpm-store
-          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-
-      - name: Install dependencies (from cache)
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
+      - name: debug
+        run: |
+          echo "Changed app: ${{ matrix.app }}"
+          echo "Current working directory: $(pwd)"
+          echo "Node version: $(node -v)"
+          echo "NPM version: $(npm -v)"
+          echo "PNPM version: $(pnpm -v)"
+          echo "Branch: ${{ github.head_ref || github.ref }}"
+
+      - name: Lint ${{ matrix.app }}
         run: pnpm exec lerna run lint --scope ${{ matrix.app }}
 
-      - name: Type Check
+      - name: Type Check ${{ matrix.app }}
         run: pnpm exec lerna run typecheck --scope ${{ matrix.app }}
 
-      - name: Test
+      - name: Test ${{ matrix.app }}
         run: pnpm exec lerna run test:ci --scope ${{ matrix.app }}
 
-      - name: Build
+      - name: Build ${{ matrix.app }}
         run: pnpm exec lerna run build --scope ${{ matrix.app }}

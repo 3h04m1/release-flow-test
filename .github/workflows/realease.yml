@@ -5,12 +5,23 @@ on:
     branches:
       - main
       - stage
+      - dev
 
 jobs:
   release:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Debug
+        run: |
+          echo "GITHUB_REF: {{ github.ref }}"
+          echo "GITHUB_EVENT_NAME: ${{ github.event_name }}"
+          echo "GITHUB_SHA: ${{ github.sha }}"
+          echo "GITHUB_EVENT_PATH: ${{ github.event_path }}"
+          echo "GITHUB_WORKFLOW: ${{ github.workflow }}"
+          echo "GITHUB_WORKSPACE: ${{ github.workspace }}"
+          echo "GITHUB_REPOSITORY: ${{ github.repository }}"
+
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
@@ -43,7 +54,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run release -- --ci --preReleaseVersion=rc
-
-      - name: Skip release for dev branch
-        if: github.ref == 'refs/heads/dev'
-        run: echo "Dev branch - no release, just deployment (configure separately)"

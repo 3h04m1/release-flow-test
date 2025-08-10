@@ -53,4 +53,4 @@ jobs:
         if: github.ref == 'refs/heads/stage'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run release -- --ci --preReleaseVersion=rc
+        run: pnpm release --ci --preRelease=rc

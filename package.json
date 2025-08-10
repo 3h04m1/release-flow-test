@@ -1,6 +1,7 @@
 {
   "name": "root",
   "private": true,
+  "type": "commonjs",
   "devDependencies": {
     "@catppuccin/vitepress": "^0.1.2",
     "@changesets/cli": "^2.29.5",
@@ -9,6 +10,7 @@
     "@commitlint/config-lerna-scopes": "^19.8.1",
     "@commitlint/types": "^19.8.1",
     "@eslint/js": "^9.32.0",
+    "@release-it/conventional-changelog": "^10.0.1",
     "@typescript-eslint/eslint-plugin": "^8.39.0",
     "@typescript-eslint/parser": "^8.39.0",
     "eslint": "^9.32.0",
@@ -22,6 +24,7 @@
     "lerna": "^8.2.3",
     "lint-staged": "^16.1.4",
     "prettier": "^3.5.3",
+    "release-it": "^19.0.4",
     "typescript": "^5.7.2",
     "vitepress": "^1.6.4"
   },
@@ -32,11 +35,21 @@
     "prepare": "husky",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "release": "release-it"
   },
   "packageManager": "pnpm@10.2.0",
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "@tailwindcss/oxide",
+      "esbuild",
+      "nx",
+      "unrs-resolver"
+    ]
+  }
 }

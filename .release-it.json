@@ -1,16 +1,11 @@
 {
   "$schema": "https://unpkg.com/release-it@19/schema/release-it.json",
-  "github": {
-    "release": true
-  },
   "plugins": {
     "@release-it/conventional-changelog": {
       "preset": {
         "name": "conventionalcommits",
         "issueUrlFormat": "https://plane.sv1.coolify.vojtkov.dev/accafe/browse/REALW-{{id}}/",
-        "issuePrefixes": [
-          "REALW-"
-        ],
+        "issuePrefixes": ["REALW-"],
         "types": [
           {
             "type": "feat",
@@ -42,6 +37,7 @@
           },
           {
             "type": "test",
+            "section": "Tests",
             "hidden": true
           }
         ]
@@ -57,5 +53,8 @@
   },
   "npm": {
     "publish": false
+  },
+  "github": {
+    "release": true
   }
 }

@@ -13,6 +13,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Debug
+        run: |
+          echo "GITHUB_REF: ${{ github.ref }}"
+          echo "GITHUB_EVENT_NAME: ${{ github.event_name }}"
+          echo "GITHUB_SHA: ${{ github.sha }}"
+          echo "GITHUB_EVENT_PATH: ${{ github.event_path }}"
+          echo "GITHUB_WORKFLOW: ${{ github.workflow }}"
+          echo "GITHUB_WORKSPACE: ${{ github.workspace }}"
+          echo "GITHUB_REPOSITORY: ${{ github.repository }}"
+
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
@@ -27,10 +37,21 @@ jobs:
           node-version: 20.12.0
 
       - name: Install dependencies
-        run: npm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
-      - name: Run release-it
+      - name: Configure Git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Run release-it for main (Production Release)
+        if: github.ref == 'refs/heads/main'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          npm run release -- --ci
+        run: pnpm release --ci
+
+      - name: Run release-it for stage (Pre-release / RC)
+        if: github.ref == 'refs/heads/stage'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm release --ci --preRelease=rc

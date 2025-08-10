@@ -4,6 +4,8 @@
     "@release-it/conventional-changelog": {
       "preset": {
         "name": "conventionalcommits",
+        "issueUrlFormat": "https://plane.sv1.coolify.vojtkov.dev/accafe/browse/{{id}}/",
+        "issuePrefixes": ["REALW-"],
         "types": [
           {
             "type": "feat",
@@ -15,7 +17,7 @@
           },
           {
             "type": "chore",
-            "section": "Chores"
+            "hidden": true
           },
           {
             "type": "docs",
@@ -23,11 +25,11 @@
           },
           {
             "type": "style",
-            "section": "Styles"
+            "hidden": true
           },
           {
             "type": "refactor",
-            "section": "Code Refactoring"
+            "hidden": true
           },
           {
             "type": "perf",
@@ -35,7 +37,8 @@
           },
           {
             "type": "test",
-            "section": "Tests"
+            "section": "Tests",
+            "hidden": true
           }
         ]
       },

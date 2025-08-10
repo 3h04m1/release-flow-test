@@ -51,5 +51,22 @@
       "nx",
       "unrs-resolver"
     ]
+  },
+  "release-it" : {
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": "angular",
+        "infile": "CHANGELOG.md"
+      }
+    },
+    "git": {
+      "commitMessage": "chore(release): ${version}",
+      "tagName": "v${version}",
+      "requireCleanWorkingDir": true,
+      "requireUpstream": true
+    },
+    "npm": {
+      "publish": false
+    }
   }
 }

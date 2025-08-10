@@ -4,7 +4,7 @@
     "@release-it/conventional-changelog": {
       "preset": {
         "name": "conventionalcommits",
-        "issueUrlFormat": "https://plane.sv1.coolify.vojtkov.dev/accafe/browse/{{id}}/",
+        "issueUrlFormat": "https://plane.sv1.coolify.vojtkov.dev/accafe/browse/REALW-{{id}}/",
         "issuePrefixes": ["REALW-"],
         "types": [
           {
